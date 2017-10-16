@@ -1,13 +1,16 @@
 <template>
 <div id="app">
   瞎鸡巴公司首页
+  <cheat></cheat>
 </div>
 </template>
 
 <script>
+import cheat from '@/views/cheat'
 export default {
   name: 'app',
   components: {
+    cheat
   },
 }
 </script>

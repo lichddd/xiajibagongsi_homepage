@@ -1,8 +1,8 @@
 <template>
   <div class="cheat"  :class="{'show':show,'hide':(!show)}" @click="hasnew=false;">
       <h2 v-if="list&&!list.length>0">没有消息</h2>
-      <el-tabs type="card" closable @tab-remove="removeMsg" class="el-tabs-margin-right">
-        <el-tab-pane
+      <div class="el-tabs-margin-right">
+        <div
           v-for="(l, index) in list"
           :key="l.source"
           :label="l.source"
@@ -10,9 +10,9 @@
           @click.native="l.hasnew=0;"
           >
           <span slot="label">
-            <el-badge class="tab-title-badge" :value="l.hasnew" :max="9" @click.native="l.hasnew=0;">
+            <!-- <el-badge class="tab-title-badge" :value="l.hasnew" :max="9" @click.native="l.hasnew=0;"> -->
               <span>{{l.source}}</span>
-            </el-badge>
+            <!-- </el-badge> -->
           </span>
           <div class="msgcontiner">
           <div class="msgcontinerinner">
@@ -29,35 +29,36 @@
 
         </div>
         </div>
-          <el-input v-model="l.str" style="width:calc(100% - 65px);display:inline-block;" @keydown.native.enter="sendMsg(l)"></el-input>
-          <el-button @click="sendMsg(l)" style="width:60px;display:inline-block;">发送</el-button>
-        </el-tab-pane>
-      </el-tabs>
-    <el-badge  class="icon" :is-dot="hasnew&&!show">
-      <div class="iconpic" :class="{'el-icon-message':(!show),'el-icon-close':show}" @click="show=!show"></div>
-    </el-badge>
+          <input v-model="l.str" style="width:calc(100% - 65px);display:inline-block;" @keydown.native.enter="sendMsg(l)"></input>
+          <button @click="sendMsg(l)" style="width:60px;display:inline-block;">发送</button>
+        </div>
+      </div>
+      <div :is-dot="hasnew&&!show" class="iconpic icon" :class="{'el-icon-message':(!show),'el-icon-close':show}" @click="show=!show"></div>
   </div>
 </template>
 <script>
+import crypto from 'crypto'
 export default {
   name: 'login',
   components:{},
   mounted(){
+    this.username=crypto.createHash('md5').update((new Date()).getTime().toString()).digest('hex');
     this.getMsg();
   },
   data () {
     return {
       hasnew:false,
       show:false,
-      list:[],
+      username:"",
+      list:[{source:"admin",hasnew:0,msg:[],str:""}],
     }
   }
   ,
   methods:{
     getMsg(lastID){
-      axios.get('admin/getMsg',{params:{name:"admin",lastID:lastID||''}}).then(m => {
+      axios.get('homepage/getMsg',{params:{name:this.username,lastID:lastID||''}}).then(m => {
         console.log(m.data);
-        if(m.data.msg.list)
+        if(m.data.msg&&m.data.msg.list)
         {
           m.data.msg.list.forEach((l)=>{
             let arr=this.list.filter((m)=>{
@@ -83,7 +84,7 @@ export default {
       })
       .catch(m=>{
         this.$nextTick(()=>{
-          this.$message({showClose:true,message:"消息服务连接失败,5秒后重连",type:"error"});
+          // this.$message({showClose:true,message:"消息服务连接失败,5秒后重连",type:"error"});
         })
         setTimeout(()=>{
           this.getMsg();
@@ -98,10 +99,10 @@ export default {
       }
       let str=data.str;
       data.str="";
-      axios.post('admin/sendMsg',{
+      axios.post('homepage/sendMsg',{
         body:str,
         target:data.source,
-        source:"admin"
+        source:this.username
       }).then(m => {
         let arr=this.list.filter((m)=>{
           return m.source==data.source;
