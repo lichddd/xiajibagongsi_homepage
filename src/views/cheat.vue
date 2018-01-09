@@ -42,14 +42,14 @@ export default {
   name: 'login',
   components:{},
   mounted(){
-    this.username=crypto.createHash('md5').update((new Date()).getTime().toString()).digest('hex');
+
     this.getMsg();
   },
   data () {
     return {
       hasnew:false,
       show:false,
-      username:"",
+      username:crypto.createHash('md5').update((new Date()).getTime().toString()).digest('hex'),
       list:[{source:"admin",hasnew:0,msg:[],str:""}],
     }
   }

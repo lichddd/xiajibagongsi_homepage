@@ -1,20 +1,32 @@
 <template>
 <div id="app">
-  瞎鸡巴公司首页
+  <h1>非常瞎的鸡巴公司超级首页</h1>
+
+
+  <news></news>
   <cheat></cheat>
 </div>
 </template>
 
 <script>
 import cheat from '@/views/cheat'
+import news from '@/views/news'
 export default {
   name: 'app',
   components: {
-    cheat
+    cheat,
+    news,
   },
 }
 </script>
+<style scoped>
+  h1{
 
+    font-size: 36px;
+
+  }
+
+</style>
 <style>
 
 
