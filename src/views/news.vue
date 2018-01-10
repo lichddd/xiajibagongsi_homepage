@@ -1,8 +1,8 @@
 <template>
   <div class="news">
-    <div v-for="l in list" class="new">
+    <div v-for="l in list" class="new" @click="getHtml(l.id)">
       <h1>{{l.title}}</h1>
-      <div v-html="l.img" class="img" @click="getHtml(l.id)"></div>
+      <div v-html="l.img" class="img"></div>
 
     </div>
     <div class="continer" v-html="html" @click="html=''" v-show="html"></div>
